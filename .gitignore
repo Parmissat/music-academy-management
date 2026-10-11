@@ -1,0 +1,17 @@
+# Database (may contain real data)
+db.sqlite3
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Django
+staticfiles/
+.env
+
+# Windows / editor
+*.lnk
+.vscode/
