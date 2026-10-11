@@ -1,115 +1,134 @@
-<<<<<<< HEAD
-=======
-[README.md](https://github.com/user-attachments/files/22752276/README.md)
->>>>>>> 8b9cb07bb48c9780eb33a2a91eb9620440855e1d
-# 🎵 Music Academy Management System
+# Music Academy Management
 
-A comprehensive web application designed for managing a **music academy**, built with **Django 5** and **Python 3.11**.  
-This system enables administrators to manage teacher and student registrations, attendance tracking, tuition payments, and monthly financial reports — all in one place.
+A Django app for the day-to-day paperwork of a small music academy: student and teacher records, attendance, tuition payments, teacher settlements and monthly reports. The interface is in Persian and uses the Jalali calendar.
 
----
+It is built for internal use on a single machine, with admin-only access.
 
-## ✨ Features
+## Why I built this
 
-- 👩‍🏫 **Teacher & Student Management**  
-  Admin can add, edit, and delete teacher and student records.
+Before this app, the academy tracked attendance, tuition and teacher shares by hand. By the end of each month nobody could say for sure how many sessions each student had attended, who had paid, or how much the academy had actually earned, and the month-end numbers were a mess.
 
-- 🕒 **Quick Attendance Registration**  
-  A dedicated section for fast and easy attendance tracking.
+I built this to put all of that in one place. Attendance is recorded as classes happen, payments are logged against students, and the monthly report works out each teacher's share and the academy's net profit from the same records, so the numbers at the end of the month come from data instead of memory.
 
-- 💰 **Tuition & Instructor Share Management**  
-  Automatically calculates monthly tuition fees and instructor shares.
+## Features
 
-- 📊 **Monthly Excel Reports**  
-  Generates detailed Excel reports of financial data and performance using **Pandas**.
+- **Teacher and student records**, managed through the Django admin.
+- **Quick attendance entry**: a dedicated admin page for marking a class session's attendance in one go.
+- **Tuition and teacher settlements**: tracks payments and works out each teacher's share.
+- **Monthly report**: calculates each teacher's share and the academy's net profit, and exports the results to Excel (pandas and openpyxl).
+- **Dashboard** with a summary of teachers, students, attendance and payments.
+- **Persian interface with Jalali dates**, including a custom `PersianMonthField` for storing Persian month names.
 
-- 📈 **Admin Dashboard**  
-  Displays an overview of key academy data:
-  - Number of active teachers  
-  - Number of students  
-  - Attendance and payment summaries  
+## Screenshots
 
-- 🇮🇷 **Persian Interface & Jalali Calendar Support**  
-  Fully localized interface and date system designed for Iranian users.
+![Dashboard](docs/screenshots/dashboard.jpg)
 
----
+![Quick attendance](docs/screenshots/quick-attendance.jpg)
 
-## 🛠️ Technologies & Tools
+![Main page](docs/screenshots/main-page.jpg)
 
-| Component | Tool |
-|------------|------|
-| Programming Language | Python 3.11 |
-| Web Framework | Django 5 |
-| Database | SQLite (default Django database) |
-| Libraries | Pandas, datetime, openpyxl |
-| IDE | Visual Studio Code |
+## Tech stack
 
----
+- Python 3.10+ (developed on 3.11)
+- Django 5.2
+- SQLite
+- pandas and openpyxl for Excel reports
+- jdatetime and django-jalali-date for Jalali dates
+- python-dotenv for configuration
 
-## 🚀 How to Run (Local Setup)
+## Data model
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/username/music-academy-management.git
+| Model | Purpose |
+| --- | --- |
+| `Teacher` | Teachers at the academy |
+| `Student` | Enrolled students |
+| `ClassSession` | A single class session |
+| `Attendance` | Attendance record for a student in a session |
+| `Payment` | Tuition payments |
+| `TeacherSettlement` | Payouts to teachers |
+| `Invoice` | Invoices |
+
+
+
+## Getting started
+
+These steps are for Windows. On macOS or Linux, activate the virtual environment with `source venv/bin/activate` and use `cp` instead of `copy`.
+
+1. Clone the repository and move into it:
+
+   ```
+   git clone https://github.com/Parmissat/music-academy-management.git
    cd music-academy-management
+   ```
 
+2. Create and activate a virtual environment:
 
+   ```
+   python -m venv venv
+   venv\Scripts\activate
+   ```
 
-2. Create and activate a virtual environment
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
+3. Install the dependencies:
 
+   ```
+   pip install -r requirements.txt
+   ```
 
-3. Install dependencies
-pip install -r requirements.txt
+4. Create your `.env` file from the example:
 
-4. Run database migrations
-python manage.py migrate
+   ```
+   copy .env.example .env
+   ```
 
-5. Start the local development server
-python manage.py runserver
+   Then generate a secret key and paste it into `.env` as the value of `SECRET_KEY`:
 
-6. Open your browser and go to:
-http://127.0.0.1:
+   ```
+   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+   ```
 
+5. Create the database and an admin account:
 
-# Project Structure
-music_academy/
+   ```
+   python manage.py migrate
+   python manage.py createsuperuser
+   ```
+
+6. Start the development server and open http://127.0.0.1:8000/ in your browser:
+
+   ```
+   python manage.py runserver
+   ```
+
+## Project structure
+
+```
+.
+├── config/                  # Django settings, URLs, WSGI
+├── core/                    # The main app
+│   ├── models.py
+│   ├── admin.py
+│   ├── views.py
+│   ├── utils.py             # Excel report helpers
+│   └── templates/
+├── admin_site.py            # TODO: one-line description
 ├── manage.py
+├── run_server.py            # TODO: one-line description
+├── run_academy_server.bat   # TODO: one-line description
 ├── requirements.txt
-├── static/
-├── templates/
-├── students/
-│   ├── models.py
-│   ├── views.py
-│   └── admin.py
-├── teachers/
-│   ├── models.py
-│   ├── views.py
-│   └── admin.py
-├── reports/
-│   ├── utils.py  # Functions for generating Excel reports
-│   └── views.py
-└── dashboard/
-    ├── views.py
-    └── templates/
+└── .env.example
+```
 
-Notes:
-* User registration is managed only by the admin — no public sign-up form is available.
+## Notes
 
-* The project is designed to run locally on the academy’s internal system (no internet connection required).
+- There is no public sign-up. Accounts are created by an administrator.
+- The app is meant to run on the academy's own computer, without an internet connection.
+- It runs on Django's built-in development server, which is fine for a single internal machine but is not set up for public hosting.
+- All pages and dates are shown in Persian with the Jalali calendar.
 
-* All pages, content, and dates are displayed in Persian (Farsi) using the Jalali calendar.
+## Author
 
-👨‍🎨 Developer:
-Parmis Sattari
-🎼 Python Developer & Multimedia Enthusiast
-📍 Developed for a private music academy in Iran
+Built by [Parmis Sattari](https://github.com/Parmissat).
 
-<<<<<<< HEAD
+## License
 
-=======
-📜 License:
-This project was developed for educational and internal use.
-Non-commercial use is permitted with credit to the author.
->>>>>>> 8b9cb07bb48c9780eb33a2a91eb9620440855e1d
+See [LICENSE.md](LICENSE.md).
