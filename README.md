@@ -110,10 +110,10 @@ These steps are for Windows. On macOS or Linux, activate the virtual environment
 │   ├── views.py
 │   ├── utils.py             # Excel report helpers
 │   └── templates/
-├── admin_site.py            # TODO: one-line description
+├── admin_site.py            
 ├── manage.py
-├── run_server.py            # TODO: one-line description
-├── run_academy_server.bat   # TODO: one-line description
+├── run_server.py            
+├── run_academy_server.bat   
 ├── requirements.txt
 └── .env.example
 ```
